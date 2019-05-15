@@ -1,5 +1,5 @@
 import numpy as np
-from Games.Dominos.environment import TetrisEnv
+from Games.Dominosv1.environment import TetrisEnv
 def file_name(div):
     return "./tetris_data.hdf5"
 
