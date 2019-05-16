@@ -1,5 +1,5 @@
 import numpy as np
-from Games.Dominosv1.environment import TetrisEnv
+from Games.Polymino.environment import Tetris,Monominos,Dominosv0,Dominosv1,Triminos
 def file_name(div):
     return "./tetris_data.hdf5"
 
@@ -11,6 +11,9 @@ def file_name(div):
 def keypress(event):
     #Here inputs are all stored in a dictionary called pressed
     #Keeping track of keypresses (adds the key)
+    if str(event.keysym) == "v":
+        env.niceView = not env.niceView 
+        return
     global pressed
     pressed[str(event.keysym)] = str(event.char)
 def keyrelease(event):
@@ -58,9 +61,9 @@ def frames(x):
 i = -40
 last = time.time()+1
 #env.c.focus_set()
-level = 15
+level = 29
 tick = 1/180*frames(level)
-env = TetrisEnv()
+env = Tetris()
 env.render()
 env.c.bind("<KeyPress>", keypress)
 env.c.bind("<KeyRelease>", keyrelease)
@@ -70,7 +73,7 @@ env.c.focus_set()
 def stuff():
     global i,last
     while True:
-        time.sleep(0.001)
+        #time.sleep(0.001)
         i=time.time()
         if i-last>=tick:
             last=i

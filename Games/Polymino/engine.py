@@ -8,7 +8,10 @@ class tetramino():
         #offset is solely for rotation, it's where the piece pivots from
         self.off = offset
         #pos is where the center of the piece is relative to the board
-        self.pos = [-1,1]
+        if env!= None:
+            self.pos = env.cfg.startpos.copy()
+        else:
+            self.pos = [-1,3]
         #pos+pts[x] gives the board position of the specific square
         #c is the colour number
         self.c = c
@@ -70,15 +73,15 @@ class tetramino():
             p = (pos[0]+self.pos[0],pos[1]+self.pos[1])
             self.env.game_board[p[0]][p[1]] = self.c
         #TODO: check if any lines are complete
-        legend = [0,40,100,300,1200]
+        legend = self.env.cfg.legend.copy()
         for row in range(len(self.env.game_board)):
             if [a for a in self.env.game_board[row] if a==2] == []:
                 del self.env.game_board[row]
                 del legend[0]
                 self.env.lines +=1
-                self.env.game_board = [[2]*6]+ self.env.game_board
+                self.env.game_board = [[2]*self.env.cfg.width]+ self.env.game_board
         self.env.on_ = self.env.next_
-        self.env.next_ = random.choice(Engine.prefabs).copy(self.env)
+        self.env.next_ = random.choice(self.env.prefabs).copy(self.env)
         self.env.score += legend[0]*(self.env.level+1)
     def copy(self,env):
         return tetramino([a+[] for a in self.pts],self.off,self.c,self.d,env=env)
@@ -89,7 +92,7 @@ class tetramino():
         for pt in new_pts:
             pt = [pt[0]+new_pos[0],pt[1]+new_pos[1]]
             #checks if out of bounds
-            if pt[0] > 15 or pt[0] < 0 or pt[1] > 5 or pt[1] < 0:
+            if pt[0] >= self.env.cfg.height or pt[0] < 0 or pt[1] >= self.env.cfg.width or pt[1] < 0:
                 return True
             #checks if board already has a piece (2 is the empty value of the board)
             if self.env.game_board[pt[0]][pt[1]] != 2:
@@ -97,46 +100,49 @@ class tetramino():
         return False
 
 class Engine():
-    LONG = [[1, 2], [1, 1]] # binary
-    prefabs = [
-    tetramino(LONG,[1.5,1.5],c=4,d=1,id_=6)]
-    def __init__(self):
-        self.on_ = random.choice(Engine.prefabs).copy(self)
-        self.next_ = random.choice(Engine.prefabs).copy(self)
-        self.game_board = [[2]*6 for x in range(16)]
+    
+    def __init__(self,cfg):
+        self.cfg = cfg
+        self.prefabs = cfg.prefabs
+        self.on_ = random.choice(self.prefabs).copy(self)
+        self.next_ = random.choice(self.prefabs).copy(self)
+        self.game_board = [[2]*cfg.width for x in range(cfg.height)]
         self.i = 0
         self.score = 0
-        self.level = 9
+        self.level = cfg.level
         self.lines = 0
         self.done = False
     def reset(self):
         self.i=0
         self.score=0
         self.lines=0
-        self.game_board = [[2]*6 for x in range(16)] #10x24
-        self.on_ = random.choice(Engine.prefabs).copy(self)
-        self.next_ = random.choice(Engine.prefabs).copy(self)
+        self.game_board = [[2]*self.cfg.width for x in range(self.cfg.height)] #10x24
+        self.on_ = random.choice(self.prefabs).copy(self)
+        self.next_ = random.choice(self.prefabs).copy(self)
         self.done = False
     def update(self,action):
         #This actually handles all the inputs
         self.i+=1
-        if self.i>2:
-            self.on_.move([1,0])
-            self.i=0
         if action==0:
             self.on_.move([0,-1])
         if action == 1:
             self.on_.move([0,1])
         if action == 2:
             self.on_.rotate()
+        if self.i>2:
+            self.on_.move([1,0])
+            self.i=0
+            self.score+= self.cfg.downpts
+
     def get_state(self):
         #5 empty slots for the header :(
-        header = [[0,self.on_.pos[0],self.on_.pos[0],
-                  self.on_.orientation,0,0]]
+        header = [self.on_.pos[0],self.on_.pos[1],self.on_.orientation
+                  ,self.on_.id_,self.next_.id_]+[0]*(self.cfg.width-5)
+        header = [header[:self.cfg.width]]
         board2 = [[[1,0][a==2] for a in x]for x in self.game_board]
         for pos in self.on_.pts:
                 p = (pos[0]+self.on_.pos[0],pos[1]+self.on_.pos[1])
-                board2[p[0]][p[1]] = -1
+                board2[p[0]][p[1]] = self.cfg.dynamicint
         return np.array(header+board2)
     def get_state_render(self):
         board2 = [[a for a in x]for x in self.game_board]
