@@ -132,7 +132,7 @@ class Engine():
     def get_state(self):
         #5 empty slots for the header :(
         header = [[0,self.on_.pos[0],self.on_.pos[0],
-                  self.on_.orientation,0,0,0,0,0,0]]
+                  self.on_.orientation,0,0]]
         board2 = [[[1,0][a==2] for a in x]for x in self.game_board]
         for pos in self.on_.pts:
                 p = (pos[0]+self.on_.pos[0],pos[1]+self.on_.pos[1])
