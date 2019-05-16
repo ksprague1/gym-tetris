@@ -123,16 +123,17 @@ class Engine():
     def update(self,action):
         #This actually handles all the inputs
         self.i+=1
-        if self.i>2:
-            self.on_.move([1,0])
-            self.i=0
-            self.score+= self.cfg.downpts
         if action==0:
             self.on_.move([0,-1])
         if action == 1:
             self.on_.move([0,1])
         if action == 2:
             self.on_.rotate()
+        if self.i>2:
+            self.on_.move([1,0])
+            self.i=0
+            self.score+= self.cfg.downpts
+
     def get_state(self):
         #5 empty slots for the header :(
         header = [self.on_.pos[0],self.on_.pos[1],self.on_.orientation

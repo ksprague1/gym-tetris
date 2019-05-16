@@ -36,8 +36,8 @@ class TetrisEnv(gym.Env):
 
     def get_state(self):
         return self.engine.get_state()
-
-
+    def seed(self,seed):
+        self.engine.seed(seed)
     def render(self, mode ='human'):
         if self.c == None:
             root = Tk()
@@ -80,7 +80,7 @@ class Tetris(TetrisEnv):
         super().__init__(Config.Config())
 class Monominos(TetrisEnv):
     def __init__(self):
-        kwargs = {"legend":[0,4,10,30,120],
+        kwargs = {"legend":[0,1,10,30,120],
 		  "level":0,
                   "height":24,
                   "prefabs":Config.Polyminos.Monominos}
