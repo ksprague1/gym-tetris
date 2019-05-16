@@ -1,3 +1,7 @@
+try:
+    from engine import tetramino
+except:
+    from Games.Polymino.engine import tetramino
 class Polyminos():
     T = [[1, 1], [1, 2], [1, 3], [2, 2]]
     LR = [[1, 1], [1, 2], [1, 3], [2, 3]]
@@ -24,21 +28,21 @@ class Polyminos():
     DLONG = [[1, 2], [1, 1]] # binary
     Dominos = [tetramino(DLONG,[1.5,1.5],c=4,d=1,id_=0)]
 
-    Monominos = [tetramino([[1,1]],none,c=3,d=1,id_=0)]
+    Monominos = [tetramino([[1,1]],None,c=3,d=1,id_=0)]
 class Config():
     __default = {
-	"startpos":[-1,3]
-	"legend":[0,40,100,300,1200]
-	"height":24
-	"width":10
-	"level":9
-	"prefabs":Polyminos.Tetraminos
-	"downpts":0
-	"dynamicint":1
+	"startpos":[-1,3],
+	"legend":[0,40,100,300,1200],
+	"height":24,
+	"width":10,
+	"level":9,
+	"prefabs":Polyminos.Tetraminos,
+	"downpts":0,
+	"dynamicint":1,
 	"niceView":True
 	}
     def __init__(self,**kwargs):
-	self.__dict__.update(Config.__default)
-	self.__dict__.update(kwargs)
+        self.__dict__.update(Config.__default)
+        self.__dict__.update(kwargs)
 
 

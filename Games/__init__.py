@@ -3,23 +3,22 @@ from gym.envs.registration import register
 #woot
 register(
     id='Tetris-v0',
-    entry_point='Games.Tetris.environment:TetrisEnv',
+    entry_point='Games.Polymino.environment:Tetris',
 )
-
 register(
-    id='Tetris-v1',
-    entry_point='Games.Tetrisv1.environment:TetrisEnv',
+    id='Monominos-v0',
+    entry_point='Games.Polymino.environment:Monominos',
 )
 register(
     id='Dominos-v0',
-    entry_point='Games.Dominos.environment:TetrisEnv',
+    entry_point='Games.Polymino.environment:Dominosv0',
 )
 register(
     id='Dominos-v1',
-    entry_point='Games.Dominosv1.environment:TetrisEnv',
+    entry_point='Games.Polymino.environment:Dominosv1',
 )
 
 register(
     id='Triminos-v0',
-    entry_point='Games.Triminos.environment:TetrisEnv',
+    entry_point='Games.Polymino.environment:Triminos',
 )

@@ -7,23 +7,7 @@ try:
     import Config
 except:
     from Games.Polymino.engine import Engine
-    from Games.Polymino.engine import Engine
-#Specific gamemodes based on the general model
-class Tetris(TetrisEnv):
-    def __init__(self):
-	super().__init__(self,Config.Config())
-class Monominos(TetrisEnv):
-    def __init__(self):
-	kwargs = {"prefabs":Config.Polyminos.Monominos}
-	super().__init__(self,Config.Config(**kwargs))
-class Dominos(TetrisEnv):
-    def __init__(self):
-	kwargs = {"prefabs":Config.Polyminos.Dominos}
-	super().__init__(self,Config.Config(**kwargs))
-class Triminos(TetrisEnv):
-    def __init__(self):
-	kwargs = {"prefabs":Config.Polyminos.Triminos}
-	super().__init__(self,Config.Config(**kwargs))
+    from Games.Polymino import Config
 
 #Generalized tetris environment
 class TetrisEnv(gym.Env):
@@ -35,7 +19,7 @@ class TetrisEnv(gym.Env):
         self.steps = []
         self.c = None
         self.num_envs = 1
-	self.niceView = cfg.niceView
+        self.niceView = cfg.niceView
     def reset(self):
         self.engine.reset() 
         state = self.get_state()
@@ -60,10 +44,10 @@ class TetrisEnv(gym.Env):
             self.c = Canvas(root, width=1000, height=800)
             self.c.configure(background='black')
             self.c.pack()
-        if cfg.niceView:    
+        if self.niceView:    
             self.rend(self.engine.get_state_render(),self.c)
-	else:
-	    self.rend(self.engine.get_state()[1:],self.c)
+        else:
+            self.rend(self.engine.get_state()[1:],self.c)
     def rend(self,game_board,c):
         c.delete("tes")
         for pt in self.engine.next_.pts:
@@ -89,3 +73,30 @@ class TetrisEnv(gym.Env):
         y1 = coords[0]*scale+center[0]
         y2 = y1 + scale
         drend = c.create_rectangle(x1,y1,x2,y2,tag="tes",fill=colours[palate])
+
+#Specific gamemodes based on the general model
+class Tetris(TetrisEnv):
+    def __init__(self):
+        super().__init__(Config.Config())
+class Monominos(TetrisEnv):
+    def __init__(self):
+        kwargs = {"legend":[0,4,10,30,120],
+		  "level":0,
+                  "height":24,
+                  "prefabs":Config.Polyminos.Monominos}
+        super().__init__(Config.Config(**kwargs))
+class Dominosv1(TetrisEnv):
+    def __init__(self):
+        kwargs = {"prefabs":Config.Polyminos.Dominos,
+		  "width":6,"height":16,
+		  "startpos":[-1,1]}
+        super().__init__(Config.Config(**kwargs))
+class Dominosv0(TetrisEnv):
+    def __init__(self):
+        kwargs = {"prefabs":Config.Polyminos.Dominos}
+        super().__init__(Config.Config(**kwargs))
+class Triminos(TetrisEnv):
+    def __init__(self):
+        kwargs = {"prefabs":Config.Polyminos.Triminos}
+        super().__init__(Config.Config(**kwargs))
+

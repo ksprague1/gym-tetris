@@ -8,9 +8,9 @@ class tetramino():
         #offset is solely for rotation, it's where the piece pivots from
         self.off = offset
         #pos is where the center of the piece is relative to the board
-	if env!= None:
-	    self.pos = env.cfg.startpos.copy()
-	else:
+        if env!= None:
+            self.pos = env.cfg.startpos.copy()
+        else:
             self.pos = [-1,3]
         #pos+pts[x] gives the board position of the specific square
         #c is the colour number
@@ -81,7 +81,7 @@ class tetramino():
                 self.env.lines +=1
                 self.env.game_board = [[2]*self.env.cfg.width]+ self.env.game_board
         self.env.on_ = self.env.next_
-        self.env.next_ = random.choice(env.prefabs).copy(self.env)
+        self.env.next_ = random.choice(self.env.prefabs).copy(self.env)
         self.env.score += legend[0]*(self.env.level+1)
     def copy(self,env):
         return tetramino([a+[] for a in self.pts],self.off,self.c,self.d,env=env)
@@ -92,7 +92,7 @@ class tetramino():
         for pt in new_pts:
             pt = [pt[0]+new_pos[0],pt[1]+new_pos[1]]
             #checks if out of bounds
-            if pt[0] > 15 or pt[0] < 0 or pt[1] > 5 or pt[1] < 0:
+            if pt[0] >= self.env.cfg.height or pt[0] < 0 or pt[1] >= self.env.cfg.width or pt[1] < 0:
                 return True
             #checks if board already has a piece (2 is the empty value of the board)
             if self.env.game_board[pt[0]][pt[1]] != 2:
@@ -102,8 +102,8 @@ class tetramino():
 class Engine():
     
     def __init__(self,cfg):
-	self.cfg = cfg
-	self.prefabs = cfg.prefabs
+        self.cfg = cfg
+        self.prefabs = cfg.prefabs
         self.on_ = random.choice(self.prefabs).copy(self)
         self.next_ = random.choice(self.prefabs).copy(self)
         self.game_board = [[2]*cfg.width for x in range(cfg.height)]
@@ -126,7 +126,7 @@ class Engine():
         if self.i>2:
             self.on_.move([1,0])
             self.i=0
-	    self.score+= self.cfg.downpts
+            self.score+= self.cfg.downpts
         if action==0:
             self.on_.move([0,-1])
         if action == 1:
@@ -136,8 +136,8 @@ class Engine():
     def get_state(self):
         #5 empty slots for the header :(
         header = [self.on_.pos[0],self.on_.pos[1],self.on_.orientation
-                  ,self.on_.id_,self.next_.id_]+[0]*self.cfg.width-5
-	header = [header[:self.cfg.width]]
+                  ,self.on_.id_,self.next_.id_]+[0]*(self.cfg.width-5)
+        header = [header[:self.cfg.width]]
         board2 = [[[1,0][a==2] for a in x]for x in self.game_board]
         for pos in self.on_.pts:
                 p = (pos[0]+self.on_.pos[0],pos[1]+self.on_.pos[1])
