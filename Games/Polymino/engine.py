@@ -65,7 +65,6 @@ class tetramino():
             p = (pos[0]+self.pos[0],pos[1]+self.pos[1])
             self.env.create_square(p,self.c)
     def commit(self):
-        #THIS SHOULD TERMINATE WITH A NEGATIVE REWARD
         if self.overlap():
             self.env.done = True
             return
@@ -79,9 +78,11 @@ class tetramino():
                 del self.env.game_board[row]
                 del legend[0]
                 self.env.lines +=1
+                #Add in a new empty line
                 self.env.game_board = [[2]*self.env.cfg.width]+ self.env.game_board
         self.env.on_ = self.env.next_
         self.env.next_ = random.choice(self.env.prefabs).copy(self.env)
+        #the score is updated in accordance with the legend in cfg
         self.env.score += legend[0]*(self.env.level+1)
     def copy(self,env):
         return tetramino([a+[] for a in self.pts],self.off,self.c,self.d,env=env)
@@ -103,9 +104,13 @@ class Engine():
     
     def __init__(self,cfg):
         self.cfg = cfg
+        #prefabs are all the polyminos the game is allowed to use
         self.prefabs = cfg.prefabs
+        #The polymino is decided by picking a random one from prefabs
         self.on_ = random.choice(self.prefabs).copy(self)
         self.next_ = random.choice(self.prefabs).copy(self)
+        #board is represented by a heightxwidth grid of integers
+        #[0][0] is top left and [width-1][height-1] is bottom right
         self.game_board = [[2]*cfg.width for x in range(cfg.height)]
         self.i = 0
         self.score = 0
@@ -121,6 +126,7 @@ class Engine():
         self.next_ = random.choice(self.prefabs).copy(self)
         self.done = False
     def update(self,action):
+        """Updates the board based on an action given"""
         #This actually handles all the inputs
         self.i+=1
         if action==0:
@@ -132,19 +138,29 @@ class Engine():
         if self.i>2:
             self.on_.move([1,0])
             self.i=0
+            #updates score in accordance to config
+            #this score is just for moving a piece down
             self.score+= self.cfg.downpts
 
     def get_state(self):
+        """Getter for environment state"""
         #5 empty slots for the header :(
         header = [self.on_.pos[0],self.on_.pos[1],self.on_.orientation
                   ,self.on_.id_,self.next_.id_]+[0]*(self.cfg.width-5)
+        #if the width is less then 5 the last entries are dropped
         header = [header[:self.cfg.width]]
+        # all board positions are now 0 if occupied or 1 if empty
         board2 = [[[1,0][a==2] for a in x]for x in self.game_board]
         for pos in self.on_.pts:
                 p = (pos[0]+self.on_.pos[0],pos[1]+self.on_.pos[1])
+                #boards with the controlled polymino are set to a special
+                #value in accordance to the config (default is 1)
                 board2[p[0]][p[1]] = self.cfg.dynamicint
         return np.array(header+board2)
     def get_state_render(self):
+        """Special Getter for visulaizing the environment state"""
+        #the board is by default colour coated to look nicer with the integer
+        #at a specific board position representing the colour of that tile
         board2 = [[a for a in x]for x in self.game_board]
         for pos in self.on_.pts:
             p = (pos[0]+self.on_.pos[0],pos[1]+self.on_.pos[1])

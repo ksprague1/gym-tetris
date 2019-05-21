@@ -19,8 +19,10 @@ class TetrisEnv(gym.Env):
         self.steps = []
         self.c = None
         self.num_envs = 1
+        #for visualizing the game only
         self.niceView = cfg.niceView
     def reset(self):
+        #engine.reset() resets the game
         self.engine.reset() 
         state = self.get_state()
         self.steps.append(list(state))
@@ -44,11 +46,14 @@ class TetrisEnv(gym.Env):
             self.c = Canvas(root, width=1000, height=800)
             self.c.configure(background='black')
             self.c.pack()
-        if self.niceView:    
+        if self.niceView:
+            #rendering nicely
             self.rend(self.engine.get_state_render(),self.c)
         else:
+            #rendering what the learning agent sees
             self.rend(self.engine.get_state()[1:],self.c)
     def rend(self,game_board,c):
+        #tkinter is required
         c.delete("tes")
         for pt in self.engine.next_.pts:
             self.create_square([pt[0]+10,pt[1]+15],self.engine.next_.c,self.c)
