@@ -48,7 +48,8 @@ class Config():
 	"downpts":0,
         #value of engine state for a point occupied by the controlled polymino
 	"dynamicint":1,
-        #True for a coloured render, false to see what the agent is given as input	"niceView":True
+        #True for a coloured render, false to see what the agent is given as input
+        "niceView":True
 	}
     def __init__(self,**kwargs):
         self.__dict__.update(Config.__default)
