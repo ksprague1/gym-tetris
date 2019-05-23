@@ -85,7 +85,7 @@ class Tetris(TetrisEnv):
         super().__init__(Config.Config())
 class Monominos(TetrisEnv):
     def __init__(self):
-        kwargs = {"legend":[0,1,10,30,120],
+        kwargs = {"legend":[0,1],
 		  "level":0,
                   "height":24,
                   "prefabs":Config.Polyminos.Monominos}
@@ -94,11 +94,15 @@ class Dominosv1(TetrisEnv):
     def __init__(self):
         kwargs = {"prefabs":Config.Polyminos.Dominos,
 		  "width":6,"height":16,
-		  "startpos":[-1,1]}
+		  "startpos":[-1,1],
+                  "legend":[0,1,3],
+                  "level":0}
         super().__init__(Config.Config(**kwargs))
 class Dominosv0(TetrisEnv):
     def __init__(self):
-        kwargs = {"prefabs":Config.Polyminos.Dominos}
+        kwargs = {"prefabs":Config.Polyminos.Dominos,
+                  "legend":[0,1,3],
+                  "level":0}
         super().__init__(Config.Config(**kwargs))
 class Triminos(TetrisEnv):
     def __init__(self):
