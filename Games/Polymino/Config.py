@@ -23,8 +23,8 @@ class Polyminos():
     TSQ = [[1,1],[1,2],[2,1]]# None
     TT = [[1, 1], [1, 2], [1, 3]]
     Triminos = [
-    tetramino(T,[1,2],c=4,id_=0),
-    tetramino(SQ,[1.5,1.5],c=4,id_=1)]
+    tetramino(TT,[1,2],c=4,id_=0),
+    tetramino(TSQ,[1.5,1.5],c=3,id_=1)]
 
     DLONG = [[1, 2], [1, 1]] # binary
     Dominos = [tetramino(DLONG,[1.5,1.5],c=4,d=1,id_=0)]

@@ -102,6 +102,8 @@ class Dominosv0(TetrisEnv):
         super().__init__(Config.Config(**kwargs))
 class Triminos(TetrisEnv):
     def __init__(self):
-        kwargs = {"prefabs":Config.Polyminos.Triminos}
+        kwargs = {"prefabs":Config.Polyminos.Triminos,
+                  "legend":[0,1,3,9],
+                  "level":0}
         super().__init__(Config.Config(**kwargs))
 

@@ -63,7 +63,7 @@ last = time.time()+1
 #env.c.focus_set()
 level = 29
 tick = 1/180*frames(level)
-env = Monominos()
+env = Triminos()
 env.render()
 env.c.bind("<KeyPress>", keypress)
 env.c.bind("<KeyRelease>", keyrelease)
