@@ -30,18 +30,41 @@ class Polyminos():
     Dominos = [tetramino(DLONG,[1.5,1.5],c=4,d=1,id_=0)]
 
     Monominos = [tetramino([[1,1]],None,c=3,d=1,id_=0)]
+def lreward(legend):
+    def func(old_board,new_board,cleared):
+        return legend[cleared]
+    return func
+def breward(legend,pheight=0.5,phole=0.36):
+    def height(game_board):
+        for y in range(len(game_board)):
+            if [a for a in game_board[y] if a!=2] != []:
+                return len(game_board)-y
+        return 0
+    def holes(game_board):
+        holes=0
+        for y in range(len(game_board)-1):
+            for x in range(len(game_board[y])):
+                if game_board[y][x]!=2:
+                    holes+= (game_board[y+1][x]==2)
+        return holes
+    def func(old_board,new_board,cleared):
+        reward =  legend[cleared]
+        #print(height(new_board),height(old_board))
+        reward += (height(old_board)-height(new_board))*pheight
+        reward += (holes(old_board)-holes(new_board))*phole
+        return reward
+    return func
 class Config():
     __default = {
         #The position the bottom left of a polymino starts in
 	"startpos":[-1,3],
         #points awarded for line clears
         #         0  1  2   3   4   lines cleared
-	"legend":[0,40,100,300,1200],
+	"rfunc":lreward([0,40,100,300,1200]),
 	"height":24,
 	"width":10,
-        #multiplier for legend
-        #points are awarded by legend[cleared]*(level+1)
-	"level":9,
+        #frames it takes to drop a piece
+        "frames":3,
         #Polyminos available in the game
 	"prefabs":Polyminos.Tetraminos,
         #Points awarded just for a piece moving down

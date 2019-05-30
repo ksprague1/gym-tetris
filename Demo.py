@@ -1,5 +1,5 @@
 import numpy as np
-from Games.Polymino.environment import Tetris,Monominos,Dominosv0,Dominosv1,Triminos
+from Games.Polymino.environment import Tetris,Monominos,Dominosv0,Dominosv1,Dominosv2,Triminos
 def file_name(div):
     return "./tetris_data.hdf5"
 
@@ -63,7 +63,7 @@ last = time.time()+1
 #env.c.focus_set()
 level = 29
 tick = 1/180*frames(level)
-env = Triminos()
+env = Dominosv2()
 env.render()
 env.c.bind("<KeyPress>", keypress)
 env.c.bind("<KeyRelease>", keyrelease)
