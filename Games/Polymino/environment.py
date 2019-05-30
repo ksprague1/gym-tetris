@@ -57,9 +57,9 @@ class TetrisEnv(gym.Env):
         c.delete("tes")
         for pt in self.engine.next_.pts:
             self.create_square([pt[0]+10,pt[1]+15],self.engine.next_.c,self.c)
-        lines,score,level = self.engine.lines,self.engine.score,self.engine.level
+        lines,score,level = self.engine.lines,self.engine.score, 10-self.engine.frames
         c.create_text(300,400,text = "Lines %d"%lines,fill="white",tag = 'tes')
-        c.create_text(300,300,text = "Score %d"%score,fill="white",tag = 'tes')
+        c.create_text(300,300,text = "Score %.2f"%score,fill="white",tag = 'tes')
         c.create_text(300,500,text = "Level %d"%level,fill="white",tag = 'tes')
         for col in range(len(game_board)):
             for row in range(len(game_board[0])):
@@ -85,29 +85,31 @@ class Tetris(TetrisEnv):
         super().__init__(Config.Config())
 class Monominos(TetrisEnv):
     def __init__(self):
-        kwargs = {"legend":[0,1],
-		  "level":0,
+        kwargs = {"rfunc":Config.lreward([0,1]),
                   "height":24,
                   "prefabs":Config.Polyminos.Monominos}
+        super().__init__(Config.Config(**kwargs))
+class Dominosv2(TetrisEnv):
+    def __init__(self):
+        kwargs = {"prefabs":Config.Polyminos.Dominos,
+                  "rfunc":Config.breward([0,1,3]),
+                  "frames":1}
         super().__init__(Config.Config(**kwargs))
 class Dominosv1(TetrisEnv):
     def __init__(self):
         kwargs = {"prefabs":Config.Polyminos.Dominos,
 		  "width":6,"height":16,
 		  "startpos":[-1,1],
-                  "legend":[0,1,3],
-                  "level":0}
+                  "rfunc":Config.lreward([0,1,3])}
         super().__init__(Config.Config(**kwargs))
 class Dominosv0(TetrisEnv):
     def __init__(self):
         kwargs = {"prefabs":Config.Polyminos.Dominos,
-                  "legend":[0,1,3],
-                  "level":0}
+                  "rfunc":Config.lreward([0,1,3])}
         super().__init__(Config.Config(**kwargs))
 class Triminos(TetrisEnv):
     def __init__(self):
         kwargs = {"prefabs":Config.Polyminos.Triminos,
-                  "legend":[0,1,3,9],
-                  "level":0}
+                  "rfunc":Config.lreward([0,1,3,9])}
         super().__init__(Config.Config(**kwargs))
 

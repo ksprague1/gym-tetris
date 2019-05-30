@@ -68,22 +68,23 @@ class tetramino():
         if self.overlap():
             self.env.done = True
             return
+        old_board = np.copy(self.env.game_board)
         for pos in self.pts:
             p = (pos[0]+self.pos[0],pos[1]+self.pos[1])
             self.env.game_board[p[0]][p[1]] = self.c
         #TODO: check if any lines are complete
-        legend = self.env.cfg.legend.copy()
+        cleared = 0
         for row in range(len(self.env.game_board)):
             if [a for a in self.env.game_board[row] if a==2] == []:
                 del self.env.game_board[row]
-                del legend[0]
+                cleared+=1
                 self.env.lines +=1
                 #Add in a new empty line
                 self.env.game_board = [[2]*self.env.cfg.width]+ self.env.game_board
         self.env.on_ = self.env.next_
         self.env.next_ = random.choice(self.env.prefabs).copy(self.env)
-        #the score is updated in accordance with the legend in cfg
-        self.env.score += legend[0]*(self.env.level+1)
+        #the score is updated in accordance with the reward function in fonfig
+        self.env.score += self.env.cfg.rfunc(old_board,self.env.game_board,cleared)
     def copy(self,env):
         return tetramino([a+[] for a in self.pts],self.off,self.c,self.d,env=env)
     def overlap(self,new_pts = None,new_pos = None):
@@ -114,9 +115,9 @@ class Engine():
         self.game_board = [[2]*cfg.width for x in range(cfg.height)]
         self.i = 0
         self.score = 0
-        self.level = cfg.level
         self.lines = 0
         self.done = False
+        self.frames = cfg.frames
     def reset(self):
         self.i=0
         self.score=0
@@ -135,7 +136,7 @@ class Engine():
             self.on_.move([0,1])
         if action == 2:
             self.on_.rotate()
-        if self.i>2:
+        if self.i>=self.frames:
             self.on_.move([1,0])
             self.i=0
             #updates score in accordance to config

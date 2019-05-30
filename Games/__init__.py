@@ -18,7 +18,10 @@ register(
     id='Dominos-v1',
     entry_point='Games.Polymino.environment:Dominosv1',
 )
-
+register(
+    id='Dominos-v2',
+    entry_point='Games.Polymino.environment:Dominosv2',
+)
 register(
     id='Triminos-v0',
     entry_point='Games.Polymino.environment:Triminos',
