@@ -110,6 +110,8 @@ class Dominosv0(TetrisEnv):
 class Triminos(TetrisEnv):
     def __init__(self):
         kwargs = {"prefabs":Config.Polyminos.Triminos,
-                  "rfunc":Config.lreward([0,1,3,9])}
+                  "rfunc":Config.breward([0,1,3,9]),
+                  "frames":1,
+                  "killpts":3}
         super().__init__(Config.Config(**kwargs))
 

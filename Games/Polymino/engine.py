@@ -67,6 +67,7 @@ class tetramino():
     def commit(self):
         if self.overlap():
             self.env.done = True
+            self.env.score-= self.env.cfg.killpts
             return
         old_board = np.copy(self.env.game_board)
         for pos in self.pts:

@@ -72,7 +72,9 @@ class Config():
         #value of engine state for a point occupied by the controlled polymino
 	"dynamicint":1,
         #True for a coloured render, false to see what the agent is given as input
-        "niceView":True
+        "niceView":True,
+        #punishment for the game ending
+        "killpts":0
 	}
     def __init__(self,**kwargs):
         self.__dict__.update(Config.__default)
